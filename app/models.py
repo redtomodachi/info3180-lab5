@@ -11,7 +11,7 @@ class Movie(db.Model):
     poster = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def init(self, title, description, poster, created_at):
+    def __init__(self, title, description, poster, created_at):
         self.title=title
         self.description=description
         self.poster=poster

@@ -10,4 +10,4 @@ csfr = CSRFProtect(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from app import views
+from app import views, models

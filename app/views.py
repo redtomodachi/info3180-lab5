@@ -8,7 +8,7 @@ This file creates your application.
 from app import app,db
 from flask import render_template, request, jsonify, send_file, session, send_from_directory
 import os
-from datetime import datetime
+import datetime
 from app.models import Movie
 from app.forms import MovieForm
 from werkzeug.utils import secure_filename
@@ -29,7 +29,9 @@ def index():
 ###
 @app.route('/api/v1/movies', methods= ['POST'])
 def movies():
+    print("sdsad")
     form = MovieForm()
+    print(form.title.data)
     if form.validate_on_submit() and request.method =="POST":
         # Save the movie to the database
         photo = form.poster.data
@@ -61,11 +63,16 @@ def movies():
             'poster': filename,
             'description': movie.description
         }
-        return jsonify(response), 201  # HTTP status code 201 for resource created
+        return jsonify(response)  # HTTP status code 201 for resource created
     else:
         # Form validation failed, return errors
         errors = form_errors(form)
-        return jsonify({'errors': errors}), 400  
+        return jsonify({'errors': errors})  
+    
+
+@app.route('/api/v1/csrf-token', methods=['GET']) 
+def get_csrf(): 
+    return jsonify({'csrf_token': generate_csrf()})
 
 
 # Here we define a function to collect form errors from Flask-WTF
