@@ -27,7 +27,7 @@ def index():
 ###
 # The functions below should be applicable to all Flask apps.
 ###
-@app.route('/api/v1/movies', methods= ['POST'])
+@app.route('/api/v1/movies', methods= ['GET','POST'])
 def movies():
     print("sdsad")
     form = MovieForm()
@@ -64,6 +64,12 @@ def movies():
             'description': movie.description
         }
         return jsonify(response)  # HTTP status code 201 for resource created
+   
+    elif request.method == "GET":
+        movies = db.session.execute(db.select(Movie)).scalars()
+        movies = [{'id': movie.id, 'title': movie.title, 'description': movie.description, 'poster': "/api/v1/posters/"+movie.poster} for movie in movies]
+        return jsonify({'movies': movies})
+   
     else:
         # Form validation failed, return errors
         errors = form_errors(form)
@@ -73,6 +79,11 @@ def movies():
 @app.route('/api/v1/csrf-token', methods=['GET']) 
 def get_csrf(): 
     return jsonify({'csrf_token': generate_csrf()})
+
+@app.route('/api/v1/posters/<filename>')
+def get_image(filename):
+    print(filename)
+    return send_from_directory(os.path.join(os.getcwd(),app.config['UPLOAD_FOLDER']),filename)
 
 
 # Here we define a function to collect form errors from Flask-WTF
